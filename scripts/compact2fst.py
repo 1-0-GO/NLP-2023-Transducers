@@ -5,10 +5,10 @@ import re
 
 with open('../syms.txt') as syms:
     all_symbols = [line.strip().split()[0] for line in syms]
-single_numbers_or_slashes = [s for s in all_symbols if re.match(r"[0-9]|\/", )]
+single_number_or_slash = [s for s in all_symbols if re.match(r"[0-9]|\/", )]
 months_same_in_pt_and_en = ["JAN", "MAR", "JUN", "JUL", "NOV"]
 
-defined_symbols = {"single_nums_or_slashes": single_numbers_or_slashes,
+defined_symbols = {"single_num_or_slash": single_number_or_slash,
                    "months_same_in_pt_and_en": months_same_in_pt_and_en
                 }
 
