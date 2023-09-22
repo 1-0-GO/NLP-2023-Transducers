@@ -1,0 +1,11 @@
+0 1 1 eps
+1 2 1 eleventh
+1 2 2 twelfth
+1 2 3 thirteenth
+1 2 4 fourteenth
+1 2 5 fifteenth
+1 2 6 sixteenth
+1 2 7 seventeenth
+1 2 8 eighteenth
+1 2 9 nineteenth
+2

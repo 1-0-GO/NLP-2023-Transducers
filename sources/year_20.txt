@@ -1,0 +1,4 @@
+0 1 2 two
+1 2 0 thousand
+2 3 eps and
+3

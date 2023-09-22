@@ -1,0 +1,12 @@
+0 1 1 eps
+1 2 1 eleven
+1 2 2 twelve
+1 2 3 thirteen
+1 2 4 fourteen
+1 2 5 fifteen
+1 2 6 sixteen
+1 2 7 seventeen
+1 2 8 eighteen
+1 2 9 nineteen
+1 2 0 ten
+2
