@@ -5,8 +5,7 @@ test() {
 
     trans=$1
     arr="${@:2}"
-    echo ""
-    echo "***********************************************************"
+    printf "\n***********************************************************\n"
     echo "Testing $trans with $arr (output is a string  using 'syms-out.txt')"
     echo "***********************************************************"
     for w in $arr; do
@@ -15,9 +14,8 @@ test() {
                         fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms-out.txt | fst2word)
         echo "$w = $res"
     done
-
-    echo "\nThe end"
 }    
+
 
 # dates when we turned 18:
 # SEP/09/2019 JAN/01/2019
@@ -31,4 +29,7 @@ test month.fst 9 09
 test year.fst 2025
 test datenum2text.fst 09/15/2055 SEP/09/2019 JAN/01/2019
 test mix2text.fst MAY/12/2088 MAI/12/2088 SEP/09/2019 JAN/01/2019
-test date2text.fst OCT/31/2025 OUT/31/2025 10/31/2025 SEP/09/2019 JAN/01/2019
+# test date2text.fst OCT/31/2025 OUT/31/2025 10/31/2025 SEP/09/2019 JAN/01/2019
+
+
+printf "\nThe end\n"

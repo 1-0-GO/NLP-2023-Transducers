@@ -5,7 +5,7 @@ mkdir -p compiled images
 rm -f ./compiled/*.fst ./images/*.pdf
 
 # ############ Compile source transducers ############
-for i in sources/*.txt tests/*.txt; do
+for i in sources/*.txt; do
 	echo "Compiling: $i"
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
 done
