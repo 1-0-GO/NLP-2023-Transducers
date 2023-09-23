@@ -78,7 +78,9 @@ fstconcat compiled/year_tens.fst compiled/year_ones.fst > compiled/year_comp.fst
 fstunion compiled/year_comp.fst compiled/year_teens.fst > compiled/year_comp_teens.fst
 fstconcat compiled/year_20.fst compiled/year_comp_teens.fst > compiled/year.fst
 
-# comma:  -> ,
+# slash2eps: / -> eps 
+
+# slash2comma: / -> ,
 
 # datenum2text: ([d][d]|[d])/([d][d]|[d])/20[d][d] -> me_de,ye
 fstconcat compiled/month.fst compiled/slash2eps.fst > compiled/month_slash.fst
@@ -86,19 +88,11 @@ fstconcat compiled/month_slash.fst compiled/day.fst > compiled/month_day.fst
 fstconcat compiled/month_day.fst compiled/slash2comma.fst > compiled/month_day_comma.fst
 fstconcat compiled/month_day_comma.fst compiled/year.fst > compiled/datenum2text.fst
 
-# en2en: MMMen[c]* -> MMMen[c]*
-fstproject --project_type=output compiled/pt2en.fst > compiled/en2en.fst
+# create equiv. FST to datenum2text.fst with no two successful paths with the same input labels
+fstdisambiguate compiled/datenum2text.fst > compiled/datenum2textdis.fst
 
-# mix2en: MMMpt[c]*|MMMen[c]* -> MMMen[c]*
-fstunion compiled/pt2en.fst compiled/en2en.fst > compiled/mix2en.fst
-
-# [TODO: o pdf ficou diferente?]
-# en2numerical: MMMpt[c]*|MMMen[c]* (-> MMMen[c]*) -> [d][d][c]*
-fstcompose compiled/mix2en.fst compiled/mix2numerical.fst > compiled/en2numerical.fst
-
-# [TODO: not working]
 # mix2text: MMMpt[c]*|MMMen[c]* ((-> MMMen[c]*) -> [d][d][c]*) -> me_de,ye
-fstcompose compiled/en2numerical.fst compiled/datenum2text.fst > compiled/mix2text.fst
+fstcompose compiled/mix2numerical.fst compiled/datenum2textdis.fst > compiled/mix2text.fst
 
 # mix_or_date: MMMpt[c]*|MMMen[c]* (-> MMMen[c]*) -> [d][d][c]*|([d][d]|[d])/([d][d]|[d])/20[d][d] -> [d][d][c]*
 # fstunion mix2numerical.fst mix2numerical.fst > mix_or_date.fst
