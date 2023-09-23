@@ -12,14 +12,20 @@ done
 
 # ############ CORE OF THE PROJECT  ############
 
+# mmmpt2mmmen: MMMpt -> MMMen
+
+# mmmen2mm: MMMen -> [d][d]
+
+# mmmpt2mm: MMMpt-> [d][d]
+fstcompose compiled/mmmpt2mmmen.fst compiled/mmmen2mm.fst > compiled/mmmpt2mm.fst
+
 # mmm2mm: MMM -> [d][d]
+fstunion compiled/mmmpt2mm.fst compiled/mmmen2mm.fst > compiled/mmm2mm.fst
 
 # copy: [c] -> [c]
 
 # mix2numerical: MMM[c]* -> [d][d][c]*
 fstconcat compiled/mmm2mm.fst compiled/copy.fst > compiled/mix2numerical.fst
-
-# mmmpt2mmmen: MMMpt -> MMMen
 
 # pt2en: MMMpt[c]* -> MMMen[c]*
 fstconcat compiled/mmmpt2mmmen.fst compiled/copy.fst > compiled/pt2en.fst
@@ -48,11 +54,14 @@ fstunion compiled/day_single_zero_tens_teens.fst compiled/day_th.fst > compiled/
 
 # m2mm: [d] -> 0[d]
 
-# mm2mmm: [d][d] -> MMM
-fstinvert compiled/mmm2mm.fst > compiled/mm2mmm.fst
+# mm2mmmen: [d][d] -> MMM
+fstinvert compiled/mmmen2mm.fst > compiled/mm2mmmen.fst
 
-# month: [d] (-> [d][d]) -> MMM
-fstcompose compiled/m2mm.fst compiled/mm2mmm.fst > compiled/month.fst
+# mmmen: [d] (-> [d][d]) -> MMM
+fstcompose compiled/m2mm.fst compiled/mm2mmmen.fst > compiled/mmmen.fst
+
+# month: [d] (-> [d][d]) -> month 
+fstcompose compiled/mmmen.fst compiled/mmmen2month.fst > compiled/month.fst
 
 # year_20: 20 -> two_thousand_and_
 
@@ -72,8 +81,9 @@ fstconcat compiled/year_20.fst compiled/year_comp_teens.fst > compiled/year.fst
 # comma:  -> ,
 
 # datenum2text: ([d][d]|[d])/([d][d]|[d])/20[d][d] -> me_de,ye
-fstconcat compiled/month.fst compiled/day.fst > compiled/month_day.fst
-fstconcat compiled/month_day.fst compiled/comma.fst > compiled/month_day_comma.fst
+fstconcat compiled/month.fst compiled/slash2eps.fst > compiled/month_slash.fst
+fstconcat compiled/month_slash.fst compiled/day.fst > compiled/month_day.fst
+fstconcat compiled/month_day.fst compiled/slash2comma.fst > compiled/month_day_comma.fst
 fstconcat compiled/month_day_comma.fst compiled/year.fst > compiled/datenum2text.fst
 
 # en2en: MMMen[c]* -> MMMen[c]*
