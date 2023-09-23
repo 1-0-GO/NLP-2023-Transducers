@@ -89,16 +89,14 @@ fstconcat compiled/month_day.fst compiled/slash2comma.fst > compiled/month_day_c
 fstconcat compiled/month_day_comma.fst compiled/year.fst > compiled/datenum2text.fst
 
 # create equiv. FST to datenum2text.fst with no two successful paths with the same input labels
+# necessary for the fstcompose to work
 fstdisambiguate compiled/datenum2text.fst > compiled/datenum2textdis.fst
 
 # mix2text: MMMpt[c]*|MMMen[c]* ((-> MMMen[c]*) -> [d][d][c]*) -> me_de,ye
 fstcompose compiled/mix2numerical.fst compiled/datenum2textdis.fst > compiled/mix2text.fst
 
-# mix_or_date: MMMpt[c]*|MMMen[c]* (-> MMMen[c]*) -> [d][d][c]*|([d][d]|[d])/([d][d]|[d])/20[d][d] -> [d][d][c]*
-# fstunion mix2numerical.fst mix2numerical.fst > mix_or_date.fst
-
 # date2text
-# fstcompose mix_or_date.fst daenum2text.fst > date2text.fst
+fstunion compiled/datenum2text.fst compiled/mix2text.fst > compiled/date2text.fst
 
 
 # ############ generate PDFs  ############
