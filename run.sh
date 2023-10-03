@@ -5,7 +5,7 @@ mkdir -p compiled images
 rm -f ./compiled/*.fst ./images/*.pdf
 
 # ############ Compile source transducers ############
-for i in sources/*.txt; do
+for i in sources/*.txt tests/*.txt;  do
 	echo "Compiling: $i"
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
 done
@@ -102,6 +102,20 @@ fstunion compiled/datenum2text.fst compiled/mix2text.fst > compiled/date2text.fs
 # ############ generate PDFs  ############
 echo "Starting to generate PDFs"
 for i in compiled/*.fst; do
+	echo "Creating image: images/$(basename $i '.fst').pdf"
+   fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
+done
+
+#1 - generates files
+echo "\n***********************************************************"
+echo "The output is a transducer: fst and pdf"
+echo "***********************************************************"
+for w in compiled/t-*.fst; do
+    echo "Compiling compiled/$(basename $w ".fst")-out.fst"
+    fstcompose $w compiled/n2text.fst | fstshortestpath | fstproject --project_type=output |
+                  fstrmepsilon | fsttopsort > compiled/$(basename $w ".fst")-out.fst
+done
+for i in compiled/t-*-out.fst; do
 	echo "Creating image: images/$(basename $i '.fst').pdf"
    fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
 done
