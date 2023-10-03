@@ -18,7 +18,7 @@ test() {
 
 
 # dates when we turned 18:
-# SEP/09/2019 JAN/01/2019
+# SEP/09/2019 MAR/13/2017
 
 test mmm2mm.fst JAN FEB FEV DEC 
 test mix2numerical.fst SET/20/2018 SEP/09/2019 MAR/13/2017
