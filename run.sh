@@ -107,12 +107,12 @@ for i in compiled/*.fst; do
 done
 
 #1 - generates files
-echo "\n***********************************************************"
-echo "The output is a transducer: fst and pdf"
+trans=date2text
+echo "***********************************************************"
+echo "Testing $trans. The output is a transducer: fst and pdf".
 echo "***********************************************************"
 for w in compiled/t-*.fst; do
-    echo "Compiling compiled/$(basename $w ".fst")-out.fst"
-    fstcompose $w compiled/n2text.fst | fstshortestpath | fstproject --project_type=output |
+    fstcompose $w compiled/$trans.fst | fstshortestpath | fstproject --project_type=output |
                   fstrmepsilon | fsttopsort > compiled/$(basename $w ".fst")-out.fst
 done
 for i in compiled/t-*-out.fst; do
