@@ -4,12 +4,14 @@ mkdir -p compiled images
 
 rm -f ./compiled/*.fst ./images/*.pdf
 
+printf "Starting compilation of source transducers\n"
 # ############ Compile source transducers ############
 for i in sources/*.txt tests/*.txt;  do
 	echo "Compiling: $i"
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
 done
 
+printf "\nGenerating more transducers using FST opperations on source transducers\n"
 # ############ CORE OF THE PROJECT  ############
 
 # mmmpt2mmmen: MMMpt -> MMMen
@@ -100,12 +102,13 @@ fstunion compiled/datenum2text.fst compiled/mix2text.fst > compiled/date2text.fs
 
 
 # ############ generate PDFs  ############
-echo "Starting to generate PDFs"
+printf "\nStarting to generate PDFs\n"
 for i in compiled/*.fst; do
 	echo "Creating image: images/$(basename $i '.fst').pdf"
    fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
 done
 
+printf "\nStarting testing of transducers\n"
 #1 - generates files
 trans=date2text
 echo "***********************************************************"
@@ -120,4 +123,39 @@ for i in compiled/t-*-out.fst; do
    fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
 done
 
-./test.sh
+#3 - presents the output with the tokens concatenated (uses a different syms on the output)
+test() {
+    fst2word() {
+        awk '{if(NF>=3){printf("%s",$3)}}END{printf("\n")}'
+    }
+
+    trans=$1
+    arr="${@:2}"
+    printf "\n***********************************************************\n"
+    echo "Testing $trans with $arr (output is a string  using 'syms-out.txt')"
+    echo "***********************************************************"
+    for w in $arr; do
+        res=$(python3 ./scripts/word2fst.py $w | fstcompile --isymbols=syms.txt --osymbols=syms.txt | fstarcsort |
+                        fstcompose - compiled/$trans | fstshortestpath | fstproject --project_type=output |
+                        fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms-out.txt | fst2word)
+        echo "$w = $res"
+    done
+}    
+
+# dates when we turned 18:
+# SEP/09/2019 MAR/13/2017
+
+test mmm2mm.fst JAN FEB FEV DEC 
+test mix2numerical.fst SET/20/2018 SEP/09/2019 MAR/13/2017
+test pt2en.fst SET/5/2018
+test en2pt.fst FEB/05/2081 SEP/09/2019 MAR/13/2017
+test day.fst 22
+test month.fst 9 09
+test year.fst 2025 2001 2099
+test datenum2text.fst 09/15/2055 09/09/2019 03/13/2017
+test mix2text.fst MAY/12/2088 MAI/12/2088 SEP/09/2019 MAR/13/2017
+test date2text.fst OCT/31/2025 OUT/31/2025 10/31/2025 SEP/09/2019 MAR/13/2017
+
+printf "\n\n***********************************************************\n"
+printf "                        THE END"
+printf "\n***********************************************************\n\n\n"
